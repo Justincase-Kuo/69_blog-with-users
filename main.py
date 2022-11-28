@@ -96,7 +96,7 @@ def get_all_posts():
 @app.route('/register', methods=["GET", "POST"])
 def register():
     form = RegisterForm()
-
+    print("hello")
     if form.validate_on_submit():
         name = request.form['name']
         email = request.form['email']
