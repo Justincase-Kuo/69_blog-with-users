@@ -13,7 +13,6 @@ from flask_gravatar import Gravatar
 from functools import wraps
 from weather_api import Weather
 import os
-import pathlib
 from flask_ckeditor import upload_success, upload_fail
 
 ##################################################################
@@ -38,8 +37,6 @@ ckeditor = CKEditor(app)
 Bootstrap(app)
 app.config['CKEDITOR_FILE_UPLOADER'] = 'upload'
 
-SRC_PATH = pathlib.Path(__file__).parent.absolute()
-UPLOAD_FOLDER = os.path.join(SRC_PATH, 'static', 'uploads')
 
 
 
