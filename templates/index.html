@@ -1,14 +1,61 @@
 {% include "header.html" %}
 
+
+<style>
+
+
+  .tram {
+    left: -5%;
+    top: 31%;
+    position: absolute;
+
+    animation-name: Move;    /*動畫名稱，需與 keyframe 名稱對應*/
+    animation-duration: 15s;    /*動畫持續時間，單位為秒*/
+    animation-delay: 1s;    /*動畫延遲開始時間*/
+    animation-iteration-count: infinite;    /*動畫次數，infinite 為無限次*/
+  }
+
+  .blink {
+    animation: blink 8s infinite;
+  }
+  #tram_img{
+    height: 100px;
+    width: auto;
+  }
+   @keyframes blink{
+    0% {opacity:0}
+    15% {opacity:1}
+    60% {opacity:0}
+    100% {opacity:1}
+  }
+
+  @keyframes Move{
+      from { left: -10%; }
+      to { left: 120%; }
+  }
+
+</style>
   <!-- Page Header -->
-  <header class="masthead" style="background-image: url('https://images.unsplash.com/photo-1470092306007-055b6797ca72?ixlib=rb-1.2.1&auto=format&fit=crop&w=668&q=80')">
+  <header class="masthead" style="background-image: url('https://images.unsplash.com/photo-1444838639505-f9042c5d2386?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1469&q=80')">
     <div class="overlay"></div>
     <div class="container">
+      <div class="tram"><img id='tram_img' src="https://cdn-icons-png.flaticon.com/512/561/561689.png"></div>
+      <div style="left: 80px; top: 400px; color: #FFDEAD; position: absolute;">
+              <h5 class="effect">台北市小南門</h5>
+              <h5 style="color: #FFF;">{{weather_list[0]['weather_title']}}<img class="blink" src="{{weather_list[0]['weather_icon']}}"></h5>
+              <h6 style="color: #FFF;">{{weather_list[0]['weather_subtitle']}} {{weather_list[0]['temp']}}°C</h6>
+      </div>
+            <div style="left: 250px; top: 400px; color: #B0E00E; position: absolute;">
+              <h5>台中市大新街</h5>
+              <h5 style="color: #FFF;">{{weather_list[1]['weather_title']}}<img class="blink" src="{{weather_list[1]['weather_icon']}}"></h5>
+              <h6 style="color: #FFF;">{{weather_list[1]['weather_subtitle']}} {{weather_list[1]['temp']}}°C</h6>
+      </div>
       <div class="row">
         <div class="col-lg-8 col-md-10 mx-auto">
           <div class="site-heading">
-            <h1>Justin's Blog</h1>
-            <span class="subheading">A collection of random musings.</span>
+
+            <h1>Guten Morgen</h1>
+            <span class="subheading"><h4>Einstein bitte!</h4></span>
           </div>
         </div>
       </div>

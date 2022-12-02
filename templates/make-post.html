@@ -1,5 +1,6 @@
 {% extends 'bootstrap/base.html' %}
 {% import "bootstrap/wtf.html" as wtf %}
+<script src="//cdn.ckeditor.com/4.9.2/standard/ckeditor.js"></script>
 
 {% block content %}
 {% include "header.html" %}
@@ -25,9 +26,11 @@
   <div class="container">
     <div class="row">
       <div class="col-lg-8 col-md-10 mx-auto">
+
+        {{ wtf.quick_form(form, novalidate=True, button_map={"submit": "primary"}) }}
         {{ ckeditor.load() }}
         {{ ckeditor.config(name='body') }}
-        {{ wtf.quick_form(form, novalidate=True, button_map={"submit": "primary"}) }}
+
       </div>
     </div>
   </div>

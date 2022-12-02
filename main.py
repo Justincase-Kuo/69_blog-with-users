@@ -1,4 +1,4 @@
-from flask import Flask, render_template, redirect, url_for, flash, request, abort
+from flask import Flask, render_template, redirect, url_for, flash, request, abort, send_from_directory
 from flask_bootstrap import Bootstrap
 from flask_ckeditor import CKEditor
 from datetime import date
@@ -8,15 +8,40 @@ from sqlalchemy.orm import relationship
 from sqlalchemy import Table, Column, Integer, ForeignKey
 from sqlalchemy.ext.declarative import declarative_base
 from flask_login import UserMixin, login_user, LoginManager, login_required, current_user, logout_user
-from forms import CreatePostForm, RegisterForm, LoginForm, CommentForm
+from forms import RegisterForm, LoginForm, CommentForm
 from flask_gravatar import Gravatar
 from functools import wraps
+from weather_api import Weather
 import os
+import pathlib
+from flask_ckeditor import upload_success, upload_fail
+
+##################################################################
+from flask_wtf import FlaskForm
+from wtforms import StringField, SubmitField, PasswordField
+from wtforms.validators import DataRequired, URL
+from flask_ckeditor import CKEditorField, CKEditor
+
+
+##WTForm
+class CreatePostForm(FlaskForm):
+    title = StringField("Blog Post Title", validators=[DataRequired()])
+    subtitle = StringField("Subtitle", validators=[DataRequired()])
+    img_url = StringField("Blog Image URL", validators=[])
+    body = CKEditorField("Blog Content", validators=[DataRequired()])
+    submit = SubmitField("Submit Post")
+##################################################################
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', '8BYkEfBA6O6donzWlSihBXox7C0sKR6b')
 ckeditor = CKEditor(app)
 Bootstrap(app)
+app.config['CKEDITOR_FILE_UPLOADER'] = 'upload'
+
+SRC_PATH = pathlib.Path(__file__).parent.absolute()
+UPLOAD_FOLDER = os.path.join(SRC_PATH, 'static', 'uploads')
+
+
 
 gravatar = Gravatar(app,
                     size=100,
@@ -91,8 +116,11 @@ def admin_only(f):
 @app.route('/')
 def get_all_posts():
     posts = BlogPost.query.all()
-    return render_template("index.html", all_posts=posts, logged_in=current_user.is_authenticated, user=current_user)
-
+    weather_list = Weather().get_weather_data()
+    return render_template("index.html", all_posts=posts,
+                           logged_in=current_user.is_authenticated,
+                           user=current_user,
+                           weather_list=weather_list)
 
 @app.route('/register', methods=["GET", "POST"])
 def register():
@@ -179,7 +207,10 @@ def contact():
 @admin_only
 def add_new_post():
     form = CreatePostForm()
+    print('oh')
     if form.validate_on_submit():
+        print(form)
+        print('hi')
         new_post = BlogPost(
             title=form.title.data,
             subtitle=form.subtitle.data,
@@ -221,6 +252,27 @@ def delete_post(post_id):
     db.session.delete(post_to_delete)
     db.session.commit()
     return redirect(url_for('get_all_posts'))
+
+
+@app.route('/files/<path:filename>')
+def uploaded_files(filename):
+    path = 'static/uploads'
+    return send_from_directory(path, filename)
+
+@app.route('/upload', methods=['POST'])
+def upload():
+    f = request.files.get('upload')
+    # Add more validations here
+    extension = f.filename.split('.')[1].lower()
+    if extension not in ['jpg', 'gif', 'png', 'jpeg']:  # 验证文件类型示例
+        return upload_fail(message='Image only!')  # 返回upload_fail调用
+    f.save(os.path.join('static/uploads', f.filename))
+    url = url_for('uploaded_files', filename=f.filename)
+    return upload_success(url=url)
+
+
+
+
 
 
 if __name__ == "__main__":
