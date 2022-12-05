@@ -25,10 +25,6 @@ from flask_ckeditor import CKEditorField, CKEditor
 
 
 
-def askyesno():
-    result = messagebox.askyesno('askyesno', 'askyesno')
-    print(result)
-
 ##WTForm
 class CreatePostForm(FlaskForm):
     title = StringField("Blog Post Title", validators=[DataRequired()])
