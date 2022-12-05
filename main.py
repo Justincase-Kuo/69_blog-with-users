@@ -20,7 +20,15 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, PasswordField
 from wtforms.validators import DataRequired, URL
 from flask_ckeditor import CKEditorField, CKEditor
+import tkinter as tk
+from tkinter import messagebox
 
+
+
+
+def askyesno():
+    result = messagebox.askyesno('askyesno', 'askyesno')
+    print(result)
 
 ##WTForm
 class CreatePostForm(FlaskForm):
@@ -249,6 +257,8 @@ def delete_post(post_id):
     db.session.delete(post_to_delete)
     db.session.commit()
     return redirect(url_for('get_all_posts'))
+
+
 
 
 @app.route('/files/<path:filename>')
