@@ -107,7 +107,7 @@ def load_user(user_id):
 def admin_only(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
-        if current_user.id not in ['Justin', 'Yutung', 'Taylor']:
+        if current_user.name not in ['Justin', 'Yutung', 'Taylor']:
             return abort(403)
         return f(*args, **kwargs)
     return decorated_function
